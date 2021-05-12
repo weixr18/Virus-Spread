@@ -10,7 +10,7 @@ Logger::~Logger()
 
 bool Logger::Start(const std::string &file_name)
 {
-    outfile.open(file_name, std::ios::app);
+    outfile.open(file_name, std::ios::out);
     if (!outfile.is_open())
     {
         std::cout << "Open file failure" << std::endl;

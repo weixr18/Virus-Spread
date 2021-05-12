@@ -88,6 +88,17 @@ Game::Game()
 
 Game::~Game()
 {
+    for (int i = 0; i < TOTAL_POPULATION; i++)
+    {
+        delete pPerson[i];
+    }
+    delete pPerson;
+
+    for (int i = 0; i < MAP_H; i++)
+    {
+        delete city[i];
+    }
+    delete city;
 }
 
 void Game::MoveStep()
@@ -230,9 +241,8 @@ void Game::SaveStep()
         tmp << cur_p.belonging_grid_->position_.y_ << '\n';
         logger_.Log(tmp.str());
     }
-    logger_.Log("\n");
 
-    if (step_count_ == TOTAL_STEPS - 1)
+    if (step_count_ == TOTAL_STEPS)
     {
         logger_.Close();
     }
