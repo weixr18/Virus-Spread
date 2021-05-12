@@ -106,7 +106,6 @@ void ConfirmedPerson::StateChange(int index)
         hospitalize_time = std::max(hospitalize_time, 0);
         HospitalizedPerson *pHospitalized = new HospitalizedPerson(*this, hospitalize_time);
         pPerson[index] = pHospitalized;
-        // no need to refresh grid->persons_
         // add to hospital
         game->hospital_.persons_.push_back(this);
         delete this;
@@ -133,8 +132,6 @@ void ConfirmedPerson::StateChange(int index)
                 HealedPerson *pHealed = new HealedPerson(*this);
                 pPerson[index] = pHealed;
                 // no need to refresh grid->persons_
-                // add to heaven
-                game->heaven_.persons_.push_back(pHealed);
                 delete this;
             }
         }
@@ -148,6 +145,8 @@ HospitalizedPerson::HospitalizedPerson(const ConfirmedPerson &p, int hospitalize
     hospitalize_time_ = hospitalize_time;
     status_ = kHospitalized;
     belonging_grid_ = &(game->hospital_);
+    home_x = p.belonging_grid_->position_.x_;
+    home_y = p.belonging_grid_->position_.y_;
 }
 
 HospitalizedPerson::~HospitalizedPerson()
@@ -184,8 +183,8 @@ void HospitalizedPerson::StateChange(int index)
             // type cast
             HealedPerson *pHealed = new HealedPerson(*this);
             pPerson[index] = pHealed;
-            // add to heaven
-            game->heaven_.persons_.push_back(pHealed);
+            // add to home grid
+
             delete this;
         }
     }
@@ -196,13 +195,13 @@ void HospitalizedPerson::StateChange(int index)
 HealedPerson::HealedPerson(const HospitalizedPerson &p) : Person(p)
 {
     status_ = kHealed;
-    belonging_grid_ = &(game->heaven_);
+    belonging_grid_ = &(city[p.home_x][p.home_y]);
 }
 
 HealedPerson::HealedPerson(const ConfirmedPerson &p) : Person(p)
 {
     status_ = kHealed;
-    belonging_grid_ = &(game->heaven_);
+    belonging_grid_ = p.belonging_grid_;
 }
 
 HealedPerson::~HealedPerson()

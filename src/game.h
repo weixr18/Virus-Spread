@@ -38,7 +38,6 @@ public:
 
     Grid hospital_ = Grid(kHospital);
     Grid tomb_ = Grid(kTomb);
-    Grid heaven_ = Grid(kHeaven);
 
     int step_count_ = 0;
     Logger logger_;

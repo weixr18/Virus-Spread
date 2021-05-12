@@ -8,9 +8,8 @@ from PyQt5.QtGui import QPainter, QPen
 from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.uic import loadUi
 
-from visual.data import load_data
+from visual.utils import load_data, load_dll
 from visual.show_area import ShowArea
-from visual.load_dll import load_dll
 
 
 class SimulationThread(QThread):
@@ -42,19 +41,28 @@ class MainWidget(QWidget):
         loadUi("visual/main.ui", self)
         self.setWindowTitle('Virus Spread')
 
-        self.file_name = "C500_M0.50_I0.10_V0.90_P0.50.txt"
-        self.counts = None
-        self.load_data(show_day=0)
-        self.day_slider.sliderMoved.connect(self.on_slider_moved)
-        self.run_btn.clicked.connect(self.run)
         self.sim_thread = SimulationThread()
         self.sim_thread.finish_signal.connect(self.on_simulation_complete)
+        self.day_slider.sliderMoved.connect(self.on_slider_moved)
+        self.run_btn.clicked.connect(self.run)
+        self.counts = None
 
         self.HOSPITAL_CAPACITY = 100
         self.P_MOVE = 0.9
         self.P_INFECT = 0.6
         self.P_VACCINATION = 0.4
         self.P_PROTECTION = 0.8
+
+        self.file_name = self.get_file_name()
+        print(self.file_name)
+        if not os.path.isfile('./data/'+self.file_name):
+            self.gb_param.setEnabled(False)
+            self.gb_run.setEnabled(False)
+            self.gb_result.setEnabled(False)
+            self.sim_thread.my_start(self.HOSPITAL_CAPACITY, self.P_MOVE,
+                                     self.P_INFECT, self.P_VACCINATION, self.P_PROTECTION)
+        else:
+            self.load_data(show_day=0)
 
         self.show()
 
@@ -104,7 +112,7 @@ class MainWidget(QWidget):
         pass
 
     def get_file_name(self):
-        str_ = "C{0}_M{1:.2f}_I{2:.2f}_V{3:.2f}_P{4:.2f}.txt".format(
+        str_ = "C{0:0>3d}_M{1:.2f}_I{2:.2f}_V{3:.2f}_P{4:.2f}.txt".format(
             self.HOSPITAL_CAPACITY,
             round(self.P_MOVE, 2),
             round(self.P_INFECT, 2),

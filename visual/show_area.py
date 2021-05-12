@@ -4,7 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-PEN_SIZE = 5
+PEN_SIZE = 4
 green_pen = QPen(Qt.green, PEN_SIZE, Qt.SolidLine)  # healthy
 yellow_pen = QPen(QColor(0xff, 0xaa, 0x33), PEN_SIZE, Qt.SolidLine)  # infected
 red_pen = QPen(Qt.red, PEN_SIZE, Qt.SolidLine)  # confirmed
@@ -38,8 +38,6 @@ class ShowArea(QWidget):
         pp = QPainter(self.pix)
         pp.eraseRect(0, 0, width, height)
 
-        pp.setPen(black_pen)
-        pp.drawPoint(800, 700)
         for i in range(5000):
             if(data[i][2]+data[i][3] < 0):
                 continue

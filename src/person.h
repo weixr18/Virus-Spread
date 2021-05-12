@@ -62,6 +62,8 @@ class HospitalizedPerson : public Person
 {
 public:
     int hospitalize_time_ = -1;
+    int home_x = -1;
+    int home_y = -1;
     void StateChange(int index);
     HospitalizedPerson(const ConfirmedPerson &p, int hospitalize_time);
     ~HospitalizedPerson();
