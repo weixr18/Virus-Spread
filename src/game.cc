@@ -1,5 +1,6 @@
 #include "game.h"
 
+Game *game;
 Grid **city = new Grid *[MAP_H]; // x:[0, 699]-MAP_H   y:[0, 799]-MAP-W
 Person **const pPerson = new Person *[TOTAL_POPULATION];
 
