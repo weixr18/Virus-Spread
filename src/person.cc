@@ -184,7 +184,7 @@ void HospitalizedPerson::StateChange(int index)
             // type cast
             HealedPerson *pHealed = new HealedPerson(*this);
             pPerson[index] = pHealed;
-            // add to tomb
+            // add to heaven
             game->heaven_.persons_.push_back(pHealed);
             delete this;
         }

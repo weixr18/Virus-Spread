@@ -59,11 +59,15 @@ Game::Game()
     }
 
     // pPerson initializion
-    HealthyPerson *tmp_persons = new HealthyPerson[TOTAL_POPULATION];
+    HealthyPerson **const tmp_pointers = new HealthyPerson *[TOTAL_POPULATION];
+    for (int i = 0; i < TOTAL_POPULATION; i++)
+    {
+        tmp_pointers[i] = new HealthyPerson;
+        pPerson[i] = tmp_pointers[i];
+    }
     for (int i = 0; i < TOTAL_POPULATION; i++)
     {
         // basic info
-        pPerson[i] = tmp_persons + i;
         Person &cur_person = *(pPerson[i]);
         cur_person.id_ = i;
         cur_person.vaccinated_ = vaccinate_distribition_(random_generator_);
@@ -81,10 +85,11 @@ Game::Game()
         {
             int incubete_time = (int)incubate_distribution_(random_generator_);
             incubete_time = std::max(incubete_time, 0);
-            InfectedPerson *pInfected = new InfectedPerson(tmp_persons[i], incubete_time);
+            InfectedPerson *pInfected = new InfectedPerson(*(tmp_pointers[i]), incubete_time);
             pPerson[i] = pInfected;
         }
     }
+    delete tmp_pointers;
 }
 
 Game::~Game()

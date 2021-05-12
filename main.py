@@ -9,7 +9,7 @@ from PyQt5.uic import loadUi
 
 from visual.data import load_data
 from visual.show_area import ShowArea
-from visual.load_dll import load_dll, test_load_dll
+from visual.load_dll import load_dll
 
 
 class MainWidget(QWidget):
@@ -34,13 +34,10 @@ class MainWidget(QWidget):
         self.day_label.setText(str(day))
 
 
-TEST = False
-
 if __name__ == '__main__':
     # app = QApplication(sys.argv)
     # w = MainWidget()
     # sys.exit(app.exec_())
-    dll = load_dll(
-        "D:/Codes/Python/Courses/Computer-Simulation/Virus-Spread/bin/sim.dll")
+    dll = load_dll("./bin/sim.dll")
     dll.sim(30)
     pass
