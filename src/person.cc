@@ -50,9 +50,20 @@ void HealthyPerson::StateChange(int index)
             ill_neighbor_count += 1;
         }
     }
-    double p_infect = 1.0 - std::pow((1 - game->P_INFECT_), ill_neighbor_count);
+
+    double p_single_infect;
+    if (vaccinated_)
+    {
+        p_single_infect = game->P_INFECT_ * (1 - (game->P_PROTECTION_));
+    }
+    else
+    {
+        p_single_infect = game->P_INFECT_;
+    }
+    double p_infect = 1.0 - std::pow((1 - p_single_infect), ill_neighbor_count);
     std::bernoulli_distribution infect_dist(p_infect);
     bool infected = infect_dist(game->random_generator_);
+
     if (infected)
     {
         int incubete_time = (int)game->incubate_distribution_(game->random_generator_);

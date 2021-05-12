@@ -10,6 +10,7 @@ from PyQt5.uic import loadUi
 
 from visual.utils import load_data, load_dll
 from visual.show_area import ShowArea
+from visual.plot import plot
 
 
 class SimulationThread(QThread):
@@ -52,6 +53,11 @@ class MainWidget(QWidget):
         self.P_INFECT = 0.6
         self.P_VACCINATION = 0.4
         self.P_PROTECTION = 0.8
+        self.value1.setValue(self.HOSPITAL_CAPACITY)
+        self.value2.setValue(self.P_MOVE)
+        self.value3.setValue(self.P_INFECT)
+        self.value4.setValue(self.P_VACCINATION)
+        self.value5.setValue(self.P_PROTECTION)
 
         self.file_name = self.get_file_name()
         print(self.file_name)
@@ -114,16 +120,19 @@ class MainWidget(QWidget):
     def get_file_name(self):
         str_ = "C{0:0>3d}_M{1:.2f}_I{2:.2f}_V{3:.2f}_P{4:.2f}.txt".format(
             self.HOSPITAL_CAPACITY,
-            round(self.P_MOVE, 2),
-            round(self.P_INFECT, 2),
-            round(self.P_VACCINATION, 2),
-            round(self.P_PROTECTION, 2)
+            self.P_MOVE,
+            self.P_INFECT,
+            self.P_VACCINATION,
+            self.P_PROTECTION,
         )
         return str_
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    w = MainWidget()
-    sys.exit(app.exec_())
+    if sys.argv.__len__() > 1 and sys.argv[1] == 'p':
+        plot()
+    else:
+        app = QApplication(sys.argv)
+        w = MainWidget()
+        sys.exit(app.exec_())
     pass

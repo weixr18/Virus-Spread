@@ -4,7 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-PEN_SIZE = 4
+PEN_SIZE = 5
 green_pen = QPen(Qt.green, PEN_SIZE, Qt.SolidLine)  # healthy
 yellow_pen = QPen(QColor(0xff, 0xaa, 0x33), PEN_SIZE, Qt.SolidLine)  # infected
 red_pen = QPen(Qt.red, PEN_SIZE, Qt.SolidLine)  # confirmed
