@@ -4,11 +4,20 @@ Game *game;
 Grid **city = new Grid *[MAP_H]; // x:[0, 699]-MAP_H   y:[0, 799]-MAP-W
 Person **const pPerson = new Person *[TOTAL_POPULATION];
 
-Game::Game()
+Game::Game(
+    const int HOSPITAL_CAPACITY,
+    const double P_MOVE,
+    const double P_INFECT,
+    const double P_VACCINATION,
+    const double P_PROTECTION) : HOSPITAL_CAPACITY_(HOSPITAL_CAPACITY),
+                                 P_MOVE_(P_MOVE), P_INFECT_(P_INFECT),
+                                 P_VACCINATION_(P_VACCINATION),
+                                 P_PROTECTION_(P_PROTECTION)
 {
+
     step_count_ = 0;
-    std::cout << "P_MOVE: " << P_MOVE << " P_INFECT: " << P_INFECT;
-    std::cout << " P_VACCINATION: " << P_VACCINATION << " P_PROTECTION: " << P_PROTECTION << std::endl;
+    std::cout << "P_MOVE: " << P_MOVE_ << " P_INFECT_: " << P_INFECT_;
+    std::cout << " P_VACCINATION: " << P_VACCINATION_ << " P_PROTECTION: " << P_PROTECTION_ << std::endl;
     std::normal_distribution<double> x_distribution(400, 100);
     std::normal_distribution<double> y_distribution(400, 100);
 
@@ -230,8 +239,8 @@ void Game::SaveStep()
         std::stringstream fmt;
         fmt << std::setiosflags(std::ios::fixed) << std::setprecision(2);
         fmt << "./data/"
-            << "C" << std::setw(3) << std::setfill('0') << HOSPITAL_CAPACITY << "_M" << P_MOVE
-            << "_I" << P_INFECT << "_V" << P_VACCINATION << "_P" << P_PROTECTION << ".txt";
+            << "C" << std::setw(3) << std::setfill('0') << HOSPITAL_CAPACITY_ << "_M" << P_MOVE_
+            << "_I" << P_INFECT_ << "_V" << P_VACCINATION_ << "_P" << P_PROTECTION_ << ".txt";
         std::string file_name = fmt.str();
         std::cout << file_name << std::endl;
         logger_.Start(file_name);

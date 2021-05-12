@@ -135,6 +135,15 @@
                <property name="readOnly">
                 <bool>false</bool>
                </property>
+               <property name="maximum">
+                <number>500</number>
+               </property>
+               <property name="singleStep">
+                <number>20</number>
+               </property>
+               <property name="value">
+                <number>500</number>
+               </property>
               </widget>
              </item>
             </layout>
@@ -175,20 +184,20 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="value2">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>20</height>
-                </size>
-               </property>
+              <widget class="QDoubleSpinBox" name="value2">
                <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
+                 <pointsize>12</pointsize>
                 </font>
                </property>
-               <property name="readOnly">
-                <bool>false</bool>
+               <property name="maximum">
+                <double>1.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+               <property name="value">
+                <double>0.500000000000000</double>
                </property>
               </widget>
              </item>
@@ -230,20 +239,20 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="value3">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>20</height>
-                </size>
-               </property>
+              <widget class="QDoubleSpinBox" name="value3">
                <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
+                 <pointsize>12</pointsize>
                 </font>
                </property>
-               <property name="readOnly">
-                <bool>false</bool>
+               <property name="maximum">
+                <double>1.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+               <property name="value">
+                <double>0.100000000000000</double>
                </property>
               </widget>
              </item>
@@ -285,20 +294,20 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="value4">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>20</height>
-                </size>
-               </property>
+              <widget class="QDoubleSpinBox" name="value4">
                <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
+                 <pointsize>12</pointsize>
                 </font>
                </property>
-               <property name="readOnly">
-                <bool>false</bool>
+               <property name="maximum">
+                <double>1.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+               <property name="value">
+                <double>0.900000000000000</double>
                </property>
               </widget>
              </item>
@@ -340,20 +349,20 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="value5">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>20</height>
-                </size>
-               </property>
+              <widget class="QDoubleSpinBox" name="value5">
                <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
+                 <pointsize>12</pointsize>
                 </font>
                </property>
-               <property name="readOnly">
-                <bool>false</bool>
+               <property name="maximum">
+                <double>1.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+               <property name="value">
+                <double>0.500000000000000</double>
                </property>
               </widget>
              </item>
@@ -364,7 +373,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="run">
+        <widget class="QGroupBox" name="gb_run">
          <property name="font">
           <font>
            <family>Cambria</family>

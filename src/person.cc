@@ -50,7 +50,7 @@ void HealthyPerson::StateChange(int index)
             ill_neighbor_count += 1;
         }
     }
-    double p_infect = 1.0 - std::pow((1 - P_INFECT), ill_neighbor_count);
+    double p_infect = 1.0 - std::pow((1 - game->P_INFECT_), ill_neighbor_count);
     std::bernoulli_distribution infect_dist(p_infect);
     bool infected = infect_dist(game->random_generator_);
     if (infected)
@@ -99,7 +99,7 @@ ConfirmedPerson::~ConfirmedPerson()
 
 void ConfirmedPerson::StateChange(int index)
 {
-    if (game->hospital_.persons_.size() < HOSPITAL_CAPACITY)
+    if (game->hospital_.persons_.size() < game->HOSPITAL_CAPACITY_)
     {
         // type cast
         int hospitalize_time = (int)game->hospitalize_distribution_(game->random_generator_);

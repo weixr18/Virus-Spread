@@ -30,7 +30,6 @@ class ShowArea(QWidget):
 
     def setData(self, data):
         self.data = data
-        self.draw_data(0)
 
     def draw_data(self, day: int):
         data = self.data[day]

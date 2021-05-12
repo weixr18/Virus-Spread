@@ -18,18 +18,18 @@ const double P_CITY_DEAD = 0.1;
 const double P_CITY_HEAL_NOT_DEAD = 2.0 / 9.0;
 const double P_HOSPITAL_DEAD = 0.02;
 
-const int HOSPITAL_CAPACITY = 500;
-const double P_MOVE = 0.5;
-const double P_INFECT = 0.1;
-const double P_VACCINATION = 0.9;
-const double P_PROTECTION = 0.50;
-
 class Game
 {
 public:
+    const int HOSPITAL_CAPACITY_;
+    const double P_MOVE_;
+    const double P_INFECT_;
+    const double P_VACCINATION_;
+    const double P_PROTECTION_;
+
     std::default_random_engine random_generator_;
-    std::bernoulli_distribution vaccinate_distribition_ = std::bernoulli_distribution(P_VACCINATION);
-    std::bernoulli_distribution move_distribution_ = std::bernoulli_distribution(P_MOVE);
+    std::bernoulli_distribution vaccinate_distribition_ = std::bernoulli_distribution(P_VACCINATION_);
+    std::bernoulli_distribution move_distribution_ = std::bernoulli_distribution(P_MOVE_);
     std::normal_distribution<double> incubate_distribution_ = std::normal_distribution<double>(70, 20);
     std::normal_distribution<double> hospitalize_distribution_ = std::normal_distribution<double>(140, 10);
     std::bernoulli_distribution city_dead_distribution_ = std::bernoulli_distribution(P_CITY_DEAD);
@@ -42,7 +42,11 @@ public:
 
     int step_count_ = 0;
     Logger logger_;
-    Game();
+    Game(const int HOSPITAL_CAPACITY = 500,
+         const double P_MOVE = 0.5,
+         const double P_INFECT = 0.1,
+         const double P_VACCINATION = 0.9,
+         const double P_PROTECTION = 0.50);
     ~Game();
 
     void Step();
