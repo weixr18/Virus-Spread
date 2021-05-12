@@ -137,12 +137,10 @@ class MainWidget(QWidget):
 
 
 if __name__ == '__main__':
-    # if sys.argv.__len__() > 1 and sys.argv[1] == 'p':
-    #     plot()
-    # else:
-    #     app = QApplication(sys.argv)
-    #     w = MainWidget()
-    #     sys.exit(app.exec_())
-    dll = load_dll()
-    dll.sim(30, 100, 0.9, 0.6, 0.4, 0.8, 0.01)
+    if sys.argv.__len__() > 1 and sys.argv[1] == 'p':
+        plot()
+    else:
+        app = QApplication(sys.argv)
+        w = MainWidget()
+        sys.exit(app.exec_())
     pass
