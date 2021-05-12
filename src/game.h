@@ -7,20 +7,22 @@
 #include "grid.h"
 #include "person.h"
 #include "global.h"
+#include "logger.h"
 
+const int TOTAL_STEPS = 300;
 constexpr int MAP_H = 700;
 constexpr int MAP_W = 800;
 constexpr int TOTAL_POPULATION = 5000;
 const int INITIAL_INFECT_NUM = 50;
-const int HOSPITAL_CAPACITY = 100;
-
-const double P_MOVE = 0.1;
-const double P_INFECT = 1.0;
-const double P_VACCINATION = 0.0;
-const double P_PROTECTION = 0.50;
 const double P_CITY_DEAD = 0.1;
 const double P_CITY_HEAL_NOT_DEAD = 2.0 / 9.0;
 const double P_HOSPITAL_DEAD = 0.02;
+
+const int HOSPITAL_CAPACITY = 500;
+const double P_MOVE = 0.5;
+const double P_INFECT = 0.1;
+const double P_VACCINATION = 0.9;
+const double P_PROTECTION = 0.50;
 
 class Game
 {
@@ -37,7 +39,9 @@ public:
     Grid hospital_ = Grid(kHospital);
     Grid tomb_ = Grid(kTomb);
     Grid heaven_ = Grid(kHeaven);
+
     int step_count_ = 0;
+    Logger logger_;
     Game();
     ~Game();
 

@@ -146,7 +146,7 @@ void ConfirmedPerson::StateChange(int index)
 HospitalizedPerson::HospitalizedPerson(const ConfirmedPerson &p, int hospitalize_time) : Person(p)
 {
     hospitalize_time_ = hospitalize_time;
-    status_ = kInfected;
+    status_ = kHospitalized;
     belonging_grid_ = &(game->hospital_);
 }
 

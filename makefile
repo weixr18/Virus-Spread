@@ -6,7 +6,7 @@ DIR_SRC:= ./src
 DIR_OBJ:= ./obj
 DIR_OBJ_WIN:= .\obj
 TARGET:= main.exe
-OBJECTS := main.o person.o grid.o game.o utils.o
+OBJECTS := main.o person.o grid.o game.o utils.o logger.o
 OBJECTS := $(addprefix $(DIR_OBJ)/,$(OBJECTS))
 
 all: $(TARGET)

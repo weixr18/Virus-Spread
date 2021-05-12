@@ -1,8 +1,4 @@
-#include <iostream>
-
 #include "game.h"
-#include "utils.h"
-#include "global.h"
 
 Grid **city = new Grid *[MAP_H]; // x:[0, 699]-MAP_H   y:[0, 799]-MAP-W
 Person **const pPerson = new Person *[TOTAL_POPULATION];
@@ -10,7 +6,8 @@ Person **const pPerson = new Person *[TOTAL_POPULATION];
 Game::Game()
 {
     step_count_ = 0;
-    std::cout << MAP_H << " " << MAP_W << " " << TOTAL_POPULATION << " " << std::endl;
+    std::cout << "P_MOVE: " << P_MOVE << " P_INFECT: " << P_INFECT;
+    std::cout << " P_VACCINATION: " << P_VACCINATION << " P_PROTECTION: " << P_PROTECTION << std::endl;
     std::normal_distribution<double> x_distribution(400, 100);
     std::normal_distribution<double> y_distribution(400, 100);
 
@@ -210,6 +207,37 @@ void Game::SwitchStateStep()
 
 void Game::SaveStep()
 {
+    // output to file
+    if (step_count_ == 0)
+    {
+        std::stringstream fmt;
+        fmt << std::setiosflags(std::ios::fixed) << std::setprecision(2);
+        fmt << "./data/"
+            << "C" << std::setw(3) << std::setfill('0') << HOSPITAL_CAPACITY << "_M" << P_MOVE
+            << "_I" << P_INFECT << "_V" << P_VACCINATION << "_P" << P_PROTECTION << ".txt";
+        std::string file_name = fmt.str();
+        std::cout << file_name << std::endl;
+        logger_.Start(file_name);
+    }
+
+    for (int i = 0; i < TOTAL_POPULATION; i++)
+    {
+        const Person &cur_p = *(pPerson[i]);
+        std::stringstream tmp;
+        tmp << cur_p.id_ << '\t';
+        tmp << cur_p.status_ << '\t';
+        tmp << cur_p.belonging_grid_->position_.x_ << '\t';
+        tmp << cur_p.belonging_grid_->position_.y_ << '\n';
+        logger_.Log(tmp.str());
+    }
+    logger_.Log("\n");
+
+    if (step_count_ == TOTAL_STEPS - 1)
+    {
+        logger_.Close();
+    }
+
+    // statistics
     if (step_count_ % 10 == 0)
     {
         int healthy_count = 0;
@@ -245,8 +273,8 @@ void Game::SaveStep()
             }
         }
 
-        printf("%3d: healthy %4d, infected %4d, confirmed %4d, hospital %4d, healed %4d, dead %4d\n",
-               step_count_, healthy_count, infected_count, confirmed_count,
+        printf("Day %3d: healthy %4d, infected %4d, confirmed %4d, hospital %4d, healed %4d, dead %4d\n",
+               step_count_ / 10, healthy_count, infected_count, confirmed_count,
                hospitalized_count, healed_count, dead_count);
     }
 
