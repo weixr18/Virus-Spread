@@ -13,7 +13,7 @@ def load_data(file_name):
     data = np.reshape(data, [-1, 5000, 4])
     data = data[::10, :, :]
     counts = []
-    for i in range(6):
+    for i in range(7):
         counts.append(np.sum(data[:, :, 1] == i, axis=1))
     counts = np.array(counts)
     return data, counts
@@ -21,6 +21,6 @@ def load_data(file_name):
 
 def load_dll(name="./bin/sim.dll"):
     lib = ctypes.cdll.LoadLibrary(name)
-    lib.sim.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_double,
+    lib.sim.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_double, ctypes.c_double,
                         ctypes.c_double, ctypes.c_double, ctypes.c_double]
     return lib

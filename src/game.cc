@@ -9,15 +9,18 @@ Game::Game(
     const double P_MOVE,
     const double P_INFECT,
     const double P_VACCINATION,
-    const double P_PROTECTION) : HOSPITAL_CAPACITY_(HOSPITAL_CAPACITY),
-                                 P_MOVE_(P_MOVE), P_INFECT_(P_INFECT),
-                                 P_VACCINATION_(P_VACCINATION),
-                                 P_PROTECTION_(P_PROTECTION)
+    const double P_PROTECTION,
+    const double P_OBSERVE) : HOSPITAL_CAPACITY_(HOSPITAL_CAPACITY),
+                              P_MOVE_(P_MOVE), P_INFECT_(P_INFECT),
+                              P_VACCINATION_(P_VACCINATION),
+                              P_PROTECTION_(P_PROTECTION),
+                              P_OBSERVE_(P_OBSERVE)
 {
 
     step_count_ = 0;
     std::cout << "P_MOVE: " << P_MOVE_ << " P_INFECT_: " << P_INFECT_;
-    std::cout << " P_VACCINATION: " << P_VACCINATION_ << " P_PROTECTION: " << P_PROTECTION_ << std::endl;
+    std::cout << " P_VACCINATION: " << P_VACCINATION_ << " P_PROTECTION: " << P_PROTECTION_;
+    std::cout << " P_OBSERVE" << P_OBSERVE_ << std::endl;
     std::normal_distribution<double> x_distribution(400, 100);
     std::normal_distribution<double> y_distribution(400, 100);
 
@@ -127,12 +130,11 @@ void Game::MoveStep()
         int cur_y = cur_person.belonging_grid_->position_.y_;
         if (cur_x + cur_y < 0)
         {
-            // the person is healed, dead or hospitalized.
+            // the person is dead or hospitalized. Do not judge.
             continue;
         }
         if (cur_person.destination_ == cur_person.belonging_grid_->position_)
         {
-
             std::normal_distribution<double> destination_x_dist(cur_x, 50);
             std::normal_distribution<double> destination_y_dist(cur_y, 50);
             int destination_x = (int)destination_x_dist(random_generator_);
@@ -185,7 +187,7 @@ void Game::MoveStep()
         int cur_y = cur_person.belonging_grid_->position_.y_;
         if (cur_x + cur_y < 0)
         {
-            // the person is healed, dead or hospitalized.
+            // the person is dead or hospitalized.
             continue;
         }
         cur_person.belonging_grid_->persons_.push_back(pPerson[i]);
@@ -200,7 +202,7 @@ void Game::MoveStep()
         int cur_y = cur_person.belonging_grid_->position_.y_;
         if (cur_x + cur_y < 0)
         {
-            // the person is healed, dead or hospitalized.
+            // the person is dead or hospitalized.
             continue;
         }
         auto tmp = cur_person.belonging_grid_->persons_;
@@ -227,6 +229,14 @@ void Game::SwitchStateStep()
 {
     for (int i = 0; i < TOTAL_POPULATION; i++)
     {
+        // if (step_count_ == 64 || step_count_ == 76)
+        // {
+        //     printf("%d\n", i);
+        //     if (i == 2718)
+        //     {
+        //         printf("state: %d, (%d, %d)\n", pPerson[i]->status_);
+        //     }
+        // }
         pPerson[i]->StateChange(i);
     }
 }
@@ -239,8 +249,9 @@ void Game::SaveStep()
         std::stringstream fmt;
         fmt << std::setiosflags(std::ios::fixed) << std::setprecision(2);
         fmt << "./data/"
-            << "C" << std::setw(3) << std::setfill('0') << HOSPITAL_CAPACITY_ << "_M" << P_MOVE_
-            << "_I" << P_INFECT_ << "_V" << P_VACCINATION_ << "_P" << P_PROTECTION_ << ".txt";
+            << "C" << std::setw(3) << std::setfill('0') << HOSPITAL_CAPACITY_
+            << "_M" << P_MOVE_ << "_I" << P_INFECT_ << "_V" << P_VACCINATION_
+            << "_P" << P_PROTECTION_ << "_O" << P_OBSERVE_ << ".txt";
         std::string file_name = fmt.str();
         std::cout << file_name << std::endl;
         logger_.Start(file_name);

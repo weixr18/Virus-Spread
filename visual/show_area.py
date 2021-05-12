@@ -12,6 +12,8 @@ orange_pen = QPen(QColor(0xee, 0x77, 0x00), PEN_SIZE,
                   Qt.SolidLine)  # hospitalized
 blue_pen = QPen(Qt.blue, PEN_SIZE, Qt.SolidLine)  # healed
 black_pen = QPen(Qt.black, PEN_SIZE, Qt.SolidLine)  # dead
+gray_pen = QPen(QColor(0x77, 0x77, 0x77), PEN_SIZE, Qt.SolidLine)  # observed
+
 pens = {
     0: green_pen,
     1: yellow_pen,
@@ -19,6 +21,7 @@ pens = {
     3: orange_pen,
     4: blue_pen,
     5: black_pen,
+    6: gray_pen,
 }
 
 

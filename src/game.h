@@ -26,6 +26,7 @@ public:
     const double P_INFECT_;
     const double P_VACCINATION_;
     const double P_PROTECTION_;
+    const double P_OBSERVE_;
 
     std::default_random_engine random_generator_;
     std::bernoulli_distribution vaccinate_distribition_ = std::bernoulli_distribution(P_VACCINATION_);
@@ -35,6 +36,7 @@ public:
     std::bernoulli_distribution city_dead_distribution_ = std::bernoulli_distribution(P_CITY_DEAD);
     std::bernoulli_distribution city_not_dead_heal_distribution_ = std::bernoulli_distribution(P_CITY_HEAL_NOT_DEAD);
     std::bernoulli_distribution hospital_dead_distribution_ = std::bernoulli_distribution(P_HOSPITAL_DEAD);
+    std::bernoulli_distribution observe_distribution_ = std::bernoulli_distribution(P_OBSERVE_);
 
     Grid hospital_ = Grid(kHospital);
     Grid tomb_ = Grid(kTomb);
@@ -45,7 +47,8 @@ public:
          const double P_MOVE = 0.5,
          const double P_INFECT = 0.1,
          const double P_VACCINATION = 0.9,
-         const double P_PROTECTION = 0.50);
+         const double P_PROTECTION = 0.50,
+         const double P_OBSERVE = 0.05);
     ~Game();
 
     void Step();

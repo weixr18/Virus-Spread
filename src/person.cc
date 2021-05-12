@@ -47,6 +47,7 @@ void HealthyPerson::StateChange(int index)
     {
         if (p->status_ == kInfected || p->status_ == kConfirmd)
         {
+            // do not count kObserved.
             ill_neighbor_count += 1;
         }
     }
@@ -95,11 +96,26 @@ void InfectedPerson::StateChange(int index)
         pPerson[index] = pConfirmed;
         delete this;
     }
+    else
+    {
+        bool is_observed = game->observe_distribution_(game->random_generator_);
+        if (is_observed)
+        {
+            ObservedPerson *pObserved = new ObservedPerson(*this);
+            pPerson[index] = pObserved;
+            delete this;
+        }
+    }
 }
 
 /*ConfirmedPerson*/
 
 ConfirmedPerson::ConfirmedPerson(const InfectedPerson &p) : Person(p)
+{
+    status_ = kConfirmd;
+}
+
+ConfirmedPerson::ConfirmedPerson(const ObservedPerson &p) : Person(p)
 {
     status_ = kConfirmd;
 }
@@ -243,4 +259,28 @@ DeadPerson::~DeadPerson()
 
 void DeadPerson::StateChange(int index)
 {
+}
+
+/*ObservedPerson*/
+
+ObservedPerson::ObservedPerson(const InfectedPerson &p) : Person(p)
+{
+    incubate_time_ = p.incubate_time_;
+    status_ = kObserved;
+}
+
+ObservedPerson::~ObservedPerson()
+{
+}
+
+void ObservedPerson::StateChange(int index)
+{
+    this->incubate_time_ -= 1;
+    if (this->incubate_time_ == 0)
+    {
+        // printf("Observe: incubate_time_ == 0!!!\n");
+        ConfirmedPerson *pConfirmed = new ConfirmedPerson(*this);
+        pPerson[index] = pConfirmed;
+        delete this;
+    }
 }

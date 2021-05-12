@@ -21,17 +21,18 @@ class SimulationThread(QThread):
         self.dll = load_dll("./bin/sim.dll")
 
     def my_start(self, HOSPITAL_CAPACITY, P_MOVE,
-                 P_INFECT, P_VACCINATION, P_PROTECTION):
+                 P_INFECT, P_VACCINATION, P_PROTECTION, P_OBSERVE):
         self.HOSPITAL_CAPACITY = HOSPITAL_CAPACITY
         self.P_MOVE = P_MOVE
         self.P_INFECT = P_INFECT
         self.P_VACCINATION = P_VACCINATION
         self.P_PROTECTION = P_PROTECTION
+        self.P_OBSERVE = P_OBSERVE
         self.start()
 
     def run(self):
-        self.dll.sim(30, self.HOSPITAL_CAPACITY, self.P_MOVE,
-                     self.P_INFECT, self.P_VACCINATION, self.P_PROTECTION)
+        self.dll.sim(30, self.HOSPITAL_CAPACITY, self.P_MOVE, self.P_INFECT,
+                     self.P_VACCINATION, self.P_PROTECTION, self.P_OBSERVE)
         self.finish_signal.emit()
         pass
 
@@ -53,11 +54,13 @@ class MainWidget(QWidget):
         self.P_INFECT = 0.6
         self.P_VACCINATION = 0.4
         self.P_PROTECTION = 0.8
+        self.P_OBSERVE = 0.0
         self.value1.setValue(self.HOSPITAL_CAPACITY)
         self.value2.setValue(self.P_MOVE)
         self.value3.setValue(self.P_INFECT)
         self.value4.setValue(self.P_VACCINATION)
         self.value5.setValue(self.P_PROTECTION)
+        self.value6.setValue(self.P_OBSERVE)
 
         self.file_name = self.get_file_name()
         print(self.file_name)
@@ -66,7 +69,8 @@ class MainWidget(QWidget):
             self.gb_run.setEnabled(False)
             self.gb_result.setEnabled(False)
             self.sim_thread.my_start(self.HOSPITAL_CAPACITY, self.P_MOVE,
-                                     self.P_INFECT, self.P_VACCINATION, self.P_PROTECTION)
+                                     self.P_INFECT, self.P_VACCINATION,
+                                     self.P_PROTECTION, self.P_OBSERVE)
         else:
             self.load_data(show_day=0)
 
@@ -84,6 +88,7 @@ class MainWidget(QWidget):
         self.P_INFECT = self.value3.value()
         self.P_VACCINATION = self.value4.value()
         self.P_PROTECTION = self.value5.value()
+        self.P_OBSERVE = self.value6.value()
         self.file_name = self.get_file_name()
         print(self.file_name)
         if not os.path.isfile('./data/'+self.file_name):
@@ -91,7 +96,8 @@ class MainWidget(QWidget):
             self.gb_run.setEnabled(False)
             self.gb_result.setEnabled(False)
             self.sim_thread.my_start(self.HOSPITAL_CAPACITY, self.P_MOVE,
-                                     self.P_INFECT, self.P_VACCINATION, self.P_PROTECTION)
+                                     self.P_INFECT, self.P_VACCINATION,
+                                     self.P_PROTECTION, self.P_OBSERVE)
         else:
             print("File exist.")
             show_day = self.day_slider.value()
@@ -115,24 +121,28 @@ class MainWidget(QWidget):
             self.le_hospitalized.setText(str(self.counts[3, day]))
             self.le_healed.setText(str(self.counts[4, day]))
             self.le_dead.setText(str(self.counts[5, day]))
+            self.le_observed.setText(str(self.counts[6, day]))
         pass
 
     def get_file_name(self):
-        str_ = "C{0:0>3d}_M{1:.2f}_I{2:.2f}_V{3:.2f}_P{4:.2f}.txt".format(
+        str_ = "C{0:0>3d}_M{1:.2f}_I{2:.2f}_V{3:.2f}_P{4:.2f}_O{5:.2f}.txt".format(
             self.HOSPITAL_CAPACITY,
             self.P_MOVE,
             self.P_INFECT,
             self.P_VACCINATION,
             self.P_PROTECTION,
+            self.P_OBSERVE,
         )
         return str_
 
 
 if __name__ == '__main__':
-    if sys.argv.__len__() > 1 and sys.argv[1] == 'p':
-        plot()
-    else:
-        app = QApplication(sys.argv)
-        w = MainWidget()
-        sys.exit(app.exec_())
+    # if sys.argv.__len__() > 1 and sys.argv[1] == 'p':
+    #     plot()
+    # else:
+    #     app = QApplication(sys.argv)
+    #     w = MainWidget()
+    #     sys.exit(app.exec_())
+    dll = load_dll()
+    dll.sim(30, 100, 0.9, 0.6, 0.4, 0.8, 0.01)
     pass

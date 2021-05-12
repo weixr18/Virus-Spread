@@ -14,6 +14,7 @@ enum InfectType
     kHospitalized = 3,
     kHealed = 4,
     kDead = 5,
+    kObserved = 6,
 };
 
 class Person
@@ -50,11 +51,21 @@ public:
     ~InfectedPerson();
 };
 
+class ObservedPerson : public Person
+{
+public:
+    int incubate_time_ = -1;
+    void StateChange(int index);
+    ObservedPerson(const InfectedPerson &p);
+    ~ObservedPerson();
+};
+
 class ConfirmedPerson : public Person
 {
 public:
     void StateChange(int index);
     ConfirmedPerson(const InfectedPerson &p);
+    ConfirmedPerson(const ObservedPerson &p);
     ~ConfirmedPerson();
 };
 
