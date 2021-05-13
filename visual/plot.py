@@ -80,12 +80,31 @@ def study_on(variable=0, x=np.linspace(0, 1.0, num=11)):
     pass
 
 
+def show_spread(params=[100, 0.9, 0.6, 0.4, 0.8, 0.00], title="typical spread"):
+    _, counts = load_data(get_file_name(params))
+    counts = counts.T
+    print(params)
+    print(counts[-1])
+    show_data(
+        list(range(0, 31, 1)), counts,
+        title=title,
+        xlabel="days",
+        ylabel="number"
+    )
+    pass
+
+
 def plot():
-    for i in range(0, 6):
-        if i == 0:
-            study_on(i, list(range(0, 550, 50)))
-        elif i == 5:
-            study_on(i, np.linspace(0, 0.1, num=11))
-        else:
-            study_on(i)
+    # for i in range(0, 6):
+    #     if i == 0:
+    #         study_on(i, list(range(0, 550, 50)))
+    #     elif i == 5:
+    #         study_on(i, np.linspace(0, 0.1, num=11))
+    #     else:
+    #         study_on(i)
+    show_spread(
+        params=[100, 0.9, 0.6, 0.9, 0.8, 0.00],
+        title="high vaccination rate"
+    )
+
     pass
