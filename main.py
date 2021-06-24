@@ -6,7 +6,7 @@ from PyQt5.QtCore import pyqtSignal, QThread
 from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.uic import loadUi
 
-from visual.utils import load_data, load_dll
+from visual.utils import STEP_PER_DAY, load_data, load_dll
 from visual.show_area import ShowArea
 from visual.plot import plot
 
@@ -76,6 +76,8 @@ class MainWidget(QWidget):
 
     def load_data(self, show_day=0):
         data, self.counts = load_data(self.file_name)
+        self.day_slider.setMaximum(data.shape[0]-1)
+        self.total_days.setText('/' + str(data.shape[0] // STEP_PER_DAY))
         self.showArea.setData(data)
         self.on_slider_moved(show_day)
         pass
@@ -109,17 +111,18 @@ class MainWidget(QWidget):
         self.load_data(show_day)
         pass
 
-    def on_slider_moved(self, day):
-        self.showArea.draw_data(day)
-        self.day_label.setText(str(day))
+    def on_slider_moved(self, step):
+        self.showArea.draw_data(step)
+        label_text = "{0} {1:02d}:00".format(step // STEP_PER_DAY, (step%STEP_PER_DAY)*2)
+        self.day_label.setText(label_text)
         if self.counts is not None:
-            self.le_healthy.setText(str(self.counts[0, day]))
-            self.le_infected.setText(str(self.counts[1, day]))
-            self.le_confirmed.setText(str(self.counts[2, day]))
-            self.le_hospitalized.setText(str(self.counts[3, day]))
-            self.le_healed.setText(str(self.counts[4, day]))
-            self.le_dead.setText(str(self.counts[5, day]))
-            self.le_observed.setText(str(self.counts[6, day]))
+            self.le_healthy.setText(str(self.counts[0, step]))
+            self.le_infected.setText(str(self.counts[1, step]))
+            self.le_confirmed.setText(str(self.counts[2, step]))
+            self.le_hospitalized.setText(str(self.counts[3, step]))
+            self.le_healed.setText(str(self.counts[4, step]))
+            self.le_dead.setText(str(self.counts[5, step]))
+            self.le_observed.setText(str(self.counts[6, step]))
         pass
 
     def get_file_name(self):

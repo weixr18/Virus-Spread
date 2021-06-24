@@ -1,17 +1,16 @@
 
 import ctypes
 import os
-
-
 import numpy as np
 import pandas as pd
 
+STEP_PER_DAY = 12
 
 def load_data(file_name):
     df = pd.read_csv("./data/" + file_name, sep='\t', header=None)
     data = df.values
     data = np.reshape(data, [-1, 5000, 4])
-    data = data[::10, :, :]
+    #data = data[::STEP_PER_DAY, :, :]
     counts = []
     for i in range(7):
         counts.append(np.sum(data[:, :, 1] == i, axis=1))

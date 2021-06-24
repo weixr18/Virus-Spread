@@ -12,7 +12,7 @@ const double P_HOSPITAL_DEAD = 0.02;
 
 // domitory, canteen, playground, teachbuilding
 const double M_TRANSFER[4][4] = {
-    0.2, 0.4, 0.3, 0.1,
+    0.05, 0.45, 0.35, 0.15,
     0.4, 0.1, 0.1, 0.4,
     0.5, 0.2, 0.2, 0.1,
     0.1, 0.3, 0.2, 0.4,
@@ -20,7 +20,7 @@ const double M_TRANSFER[4][4] = {
 
 // domitory, canteen, playground, teachbuilding
 const int MEAN_STAY_TIME[4] = {
-    5, 1, 2, 3
+    4, 1, 2, 3
 };
 const int STAY_TIME_STD = 2;
 

@@ -17,4 +17,7 @@ enum AreaType
     kTeachArea = 3,
 };
 
+const int MIDDLE_X = 400;
+const int MIDDLE_Y = 400;
+
 #endif //_DEFINATIONS_H

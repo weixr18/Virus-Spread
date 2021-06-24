@@ -33,6 +33,7 @@ public:
     void MoveStep();
     void SwitchStateStep();
     void SaveStep();
+    AreaType GetArea(Point p);
 };
 
 extern Game *game;

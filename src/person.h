@@ -22,17 +22,15 @@ class Person
 {
 public:
     int id_ = -1;
-    size_t stay_time = 1;
+    size_t stay_time_ = 1;
     InfectType status_;
     AreaType area_ = kDomitory;
     bool vaccinated_;
     std::vector<Person *> neighborhood_;
     Grid *belonging_grid_;
-    Point destination_;
     Person();
     Person(const Person &p);
     virtual ~Person();
-
     virtual void StateChange(int index) = 0;
 };
 

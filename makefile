@@ -1,7 +1,7 @@
 CC:= g++.exe
 INCLUDE:= -I./
 LIBS:= -lstdc++
-CXXFLAGS:= -std=c++11 -g
+CXXFLAGS:= -std=c++11 -g -O0
 DIR_SRC:= ./src
 DIR_OBJ:= ./obj
 DIR_OBJ_WIN:= .\obj

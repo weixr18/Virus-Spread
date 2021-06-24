@@ -84,7 +84,7 @@ Game::Game(
         x = std::max(std::min(x, MAP_H - 1), 0);
         y = std::max(std::min(y, MAP_W - 1), 0);
         cur_person.belonging_grid_ = &(city[x][y]);
-        cur_person.destination_ = city[x][y].position_;
+        //cur_person.destination_ = city[x][y].position_;
 
         // infect cast
         if (i < INITIAL_INFECT_NUM)
@@ -122,20 +122,28 @@ void Game::MoveStep()
         Person &cur_person = *(pPerson[i]);
         int cur_x = cur_person.belonging_grid_->position_.x_;
         int cur_y = cur_person.belonging_grid_->position_.y_;
-        if (cur_x + cur_y < 0)
+        if (cur_person.status_ == kObserved ||
+            cur_person.status_ == kHospitalized ||
+            cur_person.status_ == kDead)
         {
-            // the person is dead or hospitalized. Do not judge.
+            // the person is dead or hospitalized or observed. Do not judge.
             continue;
         }
 
         // move judge
-        cur_person.stay_time--;
-        if (cur_person.stay_time == 0 || step_count_ % STEP_PER_DAY == NIGHT_FALL_STEP)
+        cur_person.stay_time_--;
+        bool is_move = (cur_person.stay_time_ == 0);
+        if(step_count_ % STEP_PER_DAY == NIGHT_FALL_STEP){
+            is_move = true;
+        }
+        if (is_move)
         {
             Point nxt_pos = d_.GetNextPosition(step_count_, cur_person.area_);
             int new_x = nxt_pos.x_;
             int new_y = nxt_pos.y_;
             cur_person.belonging_grid_ = &(city[new_x][new_y]);
+            cur_person.area_ = GetArea(nxt_pos);
+            cur_person.stay_time_ = d_.GetStayTime(cur_person.area_);
         }
     }
 
@@ -147,14 +155,16 @@ void Game::MoveStep()
             city[i][j].persons_.clear();
         }
     }
+
     for (int i = 0; i < TOTAL_POPULATION; i++)
     {
         Person &cur_person = *(pPerson[i]);
         int cur_x = cur_person.belonging_grid_->position_.x_;
         int cur_y = cur_person.belonging_grid_->position_.y_;
-        if (cur_x + cur_y < 0)
+        if (cur_person.status_ == kHospitalized ||
+            cur_person.status_ == kDead)
         {
-            // the person is dead or hospitalized.
+            // the person is dead or hospitalized. Do not put into grid.
             continue;
         }
         cur_person.belonging_grid_->persons_.push_back(pPerson[i]);
@@ -167,9 +177,11 @@ void Game::MoveStep()
         cur_person.neighborhood_.clear();
         int cur_x = cur_person.belonging_grid_->position_.x_;
         int cur_y = cur_person.belonging_grid_->position_.y_;
-        if (cur_x + cur_y < 0)
+        if (cur_person.status_ == kObserved ||
+            cur_person.status_ == kHospitalized ||
+            cur_person.status_ == kDead)
         {
-            // the person is dead or hospitalized.
+            // the person is dead or hospitalized or observed. No need to update neibourhood.
             continue;
         }
         auto tmp = cur_person.belonging_grid_->persons_;
@@ -196,14 +208,6 @@ void Game::SwitchStateStep()
 {
     for (int i = 0; i < TOTAL_POPULATION; i++)
     {
-        // if (step_count_ == 64 || step_count_ == 76)
-        // {
-        //     printf("%d\n", i);
-        //     if (i == 2718)
-        //     {
-        //         printf("state: %d, (%d, %d)\n", pPerson[i]->status_);
-        //     }
-        // }
         pPerson[i]->StateChange(i);
     }
 }
@@ -293,4 +297,19 @@ void Game::Step()
     SaveStep();
     MoveStep();
     SwitchStateStep();
+}
+
+AreaType Game::GetArea(Point p){
+    if(p.x_ < MIDDLE_X){
+        if(p.y_ < MIDDLE_Y){
+            return kPlayground;
+        }
+        else return kDomitory;
+    }
+    else{
+        if(p.y_ < MIDDLE_Y){
+            return kTeachArea;
+        }
+        else return kCanteen;
+    }
 }

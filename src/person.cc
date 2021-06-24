@@ -18,8 +18,8 @@ Person::Person(const Person &p)
     vaccinated_ = p.vaccinated_;
     neighborhood_ = p.neighborhood_;
     belonging_grid_ = p.belonging_grid_;
-    destination_ = p.destination_;
-    stay_time = p.stay_time;
+    //destination_ = p.destination_;
+    stay_time_ = p.stay_time_;
     area_ = p.area_;
 }
 
@@ -212,6 +212,7 @@ HealedPerson::HealedPerson(const HospitalizedPerson &p) : Person(p)
 {
     status_ = kHealed;
     belonging_grid_ = &(city[p.home_x][p.home_y]);
+    stay_time_ = 1; // move in the next step
 }
 
 HealedPerson::HealedPerson(const ConfirmedPerson &p) : Person(p)
