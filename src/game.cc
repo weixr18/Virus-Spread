@@ -11,19 +11,13 @@ Game::Game(
     const double P_VACCINATION,
     const double P_PROTECTION,
     const double P_OBSERVE) : HOSPITAL_CAPACITY_(HOSPITAL_CAPACITY),
-                              P_MOVE_(P_MOVE), P_INFECT_(P_INFECT),
-                              P_VACCINATION_(P_VACCINATION),
-                              P_PROTECTION_(P_PROTECTION),
-                              P_OBSERVE_(P_OBSERVE)
+                              d_(P_MOVE,P_INFECT, P_VACCINATION, P_PROTECTION, P_OBSERVE)
 {
-
     step_count_ = 0;
-    std::cout << "P_MOVE: " << P_MOVE_ << " P_INFECT_: " << P_INFECT_;
-    std::cout << " P_VACCINATION: " << P_VACCINATION_ << " P_PROTECTION: " << P_PROTECTION_;
-    std::cout << " P_OBSERVE" << P_OBSERVE_ << std::endl;
-    std::normal_distribution<double> x_distribution(400, 100);
-    std::normal_distribution<double> y_distribution(400, 100);
-
+    std::cout << "P_MOVE: " << d_.P_MOVE_ << " P_INFECT_: " << d_.P_INFECT_;
+    std::cout << " P_VACCINATION: " << d_.P_VACCINATION_ << " P_PROTECTION: " << d_.P_PROTECTION_;
+    std::cout << " P_OBSERVE" << d_.P_OBSERVE_ << std::endl;
+    
     // city grid initialization
     for (int i = 0; i < MAP_H; i++)
     {
@@ -82,11 +76,11 @@ Game::Game(
         // basic info
         Person &cur_person = *(pPerson[i]);
         cur_person.id_ = i;
-        cur_person.vaccinated_ = vaccinate_distribition_(random_generator_);
+        cur_person.vaccinated_ = d_.IsVaccinated();
 
         // grid allocate
-        int x = (int)x_distribution(random_generator_);
-        int y = (int)y_distribution(random_generator_);
+        int x = d_.GetInitX();
+        int y = d_.GetInitY();
         x = std::max(std::min(x, MAP_H - 1), 0);
         y = std::max(std::min(y, MAP_W - 1), 0);
         cur_person.belonging_grid_ = &(city[x][y]);
@@ -95,7 +89,7 @@ Game::Game(
         // infect cast
         if (i < INITIAL_INFECT_NUM)
         {
-            int incubete_time = (int)incubate_distribution_(random_generator_);
+            int incubete_time = d_.GetIncubateTime();
             incubete_time = std::max(incubete_time, 0);
             InfectedPerson *pInfected = new InfectedPerson(*(tmp_pointers[i]), incubete_time);
             pPerson[i] = pInfected;
@@ -133,46 +127,19 @@ void Game::MoveStep()
             // the person is dead or hospitalized. Do not judge.
             continue;
         }
-        if (cur_person.destination_ == cur_person.belonging_grid_->position_)
-        {
-            std::normal_distribution<double> destination_x_dist(cur_x, 50);
-            std::normal_distribution<double> destination_y_dist(cur_y, 50);
-            int destination_x = (int)destination_x_dist(random_generator_);
-            int destination_y = (int)destination_y_dist(random_generator_);
-            if (destination_x > 0 && destination_x < MAP_H && destination_y > 0 && destination_y < MAP_W)
-            {
-                cur_person.destination_ = Point(destination_x, destination_y);
-            }
-        }
 
         // move judge
-        bool is_move = move_distribution_(random_generator_);
-        if (is_move)
+        cur_person.stay_time--;
+        if (cur_person.stay_time == 0 || step_count_ % STEP_PER_DAY == NIGHT_FALL_STEP)
         {
-            int destination_x = cur_person.destination_.x_;
-            int destination_y = cur_person.destination_.y_;
-            int delta_x = std::abs(cur_x - destination_x);
-            int delta_y = std::abs(cur_y - destination_y);
-            int new_x = cur_x;
-            int new_y = cur_y;
-            if (delta_x + delta_y > 0)
-            {
-                std::bernoulli_distribution move_direction_x_dist(delta_x / (double)(delta_x + delta_y));
-                bool is_moving_x = move_direction_x_dist(random_generator_);
-                if (is_moving_x)
-                {
-                    new_x = cur_x + Sign(destination_x - cur_x);
-                }
-                else
-                {
-                    new_y = cur_y + Sign(destination_y - cur_y);
-                }
-            }
+            Point nxt_pos = d_.GetNextPosition(step_count_, cur_person.area_);
+            int new_x = nxt_pos.x_;
+            int new_y = nxt_pos.y_;
             cur_person.belonging_grid_ = &(city[new_x][new_y]);
         }
     }
 
-    // grid persons update
+    // grid infomation update
     for (int i = 0; i < MAP_H; i++)
     {
         for (int j = 0; j < MAP_W; j++)
@@ -250,8 +217,8 @@ void Game::SaveStep()
         fmt << std::setiosflags(std::ios::fixed) << std::setprecision(2);
         fmt << "./data/"
             << "C" << std::setw(3) << std::setfill('0') << HOSPITAL_CAPACITY_
-            << "_M" << P_MOVE_ << "_I" << P_INFECT_ << "_V" << P_VACCINATION_
-            << "_P" << P_PROTECTION_ << "_O" << P_OBSERVE_ << ".txt";
+            << "_M" << d_.P_MOVE_ << "_I" << d_.P_INFECT_ << "_V" << d_.P_VACCINATION_
+            << "_P" << d_.P_PROTECTION_ << "_O" << d_.P_OBSERVE_ << ".txt";
         std::string file_name = fmt.str();
         std::cout << file_name << std::endl;
         logger_.Start(file_name);
@@ -274,7 +241,7 @@ void Game::SaveStep()
     }
 
     // statistics
-    if (step_count_ % 10 == 0)
+    if (step_count_ % STEP_PER_DAY == 0)
     {
         int healthy_count = 0;
         int infected_count = 0;
@@ -282,6 +249,7 @@ void Game::SaveStep()
         int hospitalized_count = 0;
         int healed_count = 0;
         int dead_count = 0;
+        int observed_count = 0;
         for (int i = 0; i < TOTAL_POPULATION; i++)
         {
             switch (pPerson[i]->status_)
@@ -304,14 +272,17 @@ void Game::SaveStep()
             case kDead:
                 dead_count++;
                 break;
+            case kObserved:
+                observed_count++;
+                break;
             default:
                 break;
             }
         }
 
-        printf("Day %3d: healthy %4d, infected %4d, confirmed %4d, hospital %4d, healed %4d, dead %4d\n",
-               step_count_ / 10, healthy_count, infected_count, confirmed_count,
-               hospitalized_count, healed_count, dead_count);
+        printf("Day %3d: healthy %4d, infected %4d, confirmed %4d, hospital %4d, healed %4d, dead %4d, observed %4d\n",
+               step_count_ / STEP_PER_DAY, healthy_count, infected_count, confirmed_count,
+               hospitalized_count, healed_count, dead_count, observed_count);
     }
 
     step_count_ += 1;

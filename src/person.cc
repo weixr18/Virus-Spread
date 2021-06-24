@@ -19,6 +19,8 @@ Person::Person(const Person &p)
     neighborhood_ = p.neighborhood_;
     belonging_grid_ = p.belonging_grid_;
     destination_ = p.destination_;
+    stay_time = p.stay_time;
+    area_ = p.area_;
 }
 
 Person::~Person()
@@ -51,23 +53,10 @@ void HealthyPerson::StateChange(int index)
             ill_neighbor_count += 1;
         }
     }
-
-    double p_single_infect;
-    if (vaccinated_)
-    {
-        p_single_infect = game->P_INFECT_ * (1 - (game->P_PROTECTION_));
-    }
-    else
-    {
-        p_single_infect = game->P_INFECT_;
-    }
-    double p_infect = 1.0 - std::pow((1 - p_single_infect), ill_neighbor_count);
-    std::bernoulli_distribution infect_dist(p_infect);
-    bool infected = infect_dist(game->random_generator_);
-
+    bool infected = game->d_.IsInfected(ill_neighbor_count, vaccinated_);
     if (infected)
     {
-        int incubete_time = (int)game->incubate_distribution_(game->random_generator_);
+        int incubete_time = game->d_.GetIncubateTime();
         incubete_time = std::max(incubete_time, 0);
         InfectedPerson *pInfected = new InfectedPerson(*this, incubete_time);
         pPerson[index] = pInfected;
@@ -98,7 +87,7 @@ void InfectedPerson::StateChange(int index)
     }
     else
     {
-        bool is_observed = game->observe_distribution_(game->random_generator_);
+        bool is_observed = game->d_.IsObserved();
         if (is_observed)
         {
             ObservedPerson *pObserved = new ObservedPerson(*this);
@@ -129,7 +118,7 @@ void ConfirmedPerson::StateChange(int index)
     if (game->hospital_.persons_.size() < game->HOSPITAL_CAPACITY_)
     {
         // type cast
-        int hospitalize_time = (int)game->hospitalize_distribution_(game->random_generator_);
+        int hospitalize_time = game->d_.GetHospitalizeTime();
         hospitalize_time = std::max(hospitalize_time, 0);
         HospitalizedPerson *pHospitalized = new HospitalizedPerson(*this, hospitalize_time);
         pPerson[index] = pHospitalized;
@@ -139,7 +128,7 @@ void ConfirmedPerson::StateChange(int index)
     }
     else
     {
-        bool dead = game->city_dead_distribution_(game->random_generator_);
+        bool dead = game->d_.IsCityPersonDead();
         if (dead)
         {
             // type cast
@@ -152,7 +141,7 @@ void ConfirmedPerson::StateChange(int index)
         }
         else
         {
-            bool healed = game->city_not_dead_heal_distribution_(game->random_generator_);
+            bool healed = game->d_.IsCityPersonNotDeadButHealed();
             if (healed)
             {
                 // type cast
@@ -195,7 +184,7 @@ void HospitalizedPerson::StateChange(int index)
                 it++;
         }
         // judge dead or healed
-        bool dead = game->hospital_dead_distribution_(game->random_generator_);
+        bool dead = game->d_.IsHospitalPersonDead();
         if (dead)
         {
             // type cast

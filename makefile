@@ -6,12 +6,12 @@ DIR_SRC:= ./src
 DIR_OBJ:= ./obj
 DIR_OBJ_WIN:= .\obj
 TARGET:= ./bin/main.exe
-OBJECTS:= main.o person.o grid.o game.o utils.o logger.o sim.o
+OBJECTS:= main.o person.o grid.o game.o utils.o logger.o distribution.o
 OBJECTS:= $(addprefix $(DIR_OBJ)/,$(OBJECTS))
 
 DEF_NAME:= bin/sim.def
 DLL_TARGET:= ./bin/sim.dll
-DLL_OBJECTS:= sim.o person.o grid.o game.o utils.o logger.o 
+DLL_OBJECTS:= sim.o person.o grid.o game.o utils.o logger.o distribution.o
 DLL_OBJECTS:= $(addprefix $(DIR_OBJ)/,$(DLL_OBJECTS))
 DIR_BIN_WIN:= .\bin
 
