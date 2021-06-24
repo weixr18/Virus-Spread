@@ -31,9 +31,11 @@ python3 main.py
 
 p.s. The makefile is written for windows MinGW compiler. To compile in other environments, you need to modify it.
 
-### About dynamic library loading
+### About dynamic library loading on Windows
 
-On Windows, when running main.py, you may encounter the following error:
+#### GCC Compiler
+
+If you use the GCC compiler, you may encounter the following error:
 
 ```ps1
 FileNotFoundError: Could not find module 'path\to\project\Virus-Spread\bin\sim.dll' (or one of its dependencies). Try using the full path with constructor syntax.
@@ -48,6 +50,60 @@ To solve this problem, there are two ways. First, put the \bin path of the gcc c
 + libwinpthread-1.dll
 
 The python script responsible for loading the dll ([visual/utils.py](https://github.com/weixr18/Virus-Spread/blob/main/visual/utils.py)) will take the .\bin into the environment variable, so it is valid to do so.
+
+#### MSVC Compiler
+
+If you use Visual Studio, this would be a little bit more complicated.
+
+Step 1, you need to create a new empty VS project (actually I can provide the project file, but I'm too lazy to install VS) and set its generation target as a dynamic link library (DLL).
+
+Step 2, copy all the files under /src (except main.cpp & sim.cpp) to the VS project folder and index them properly in the project.
+
+Step 3, the VS project should have pch.cpp and pch.h. We need to declare our interface function sim in pch.cpp in the following form:
+
+```cpp
+#include "game.h"
+#include <stdio.h>
+BOOL APIENTRY sim(int days, int HOSPITAL_CAPACITY,
+	double P_MOVE,
+	double P_INFECT,
+	double P_VACCINATION,
+	double P_PROTECTION,
+	double P_OBSERVE)
+{
+	int steps = days * 12;
+	printf("Total Steps: %d\n", steps);
+	game = new Game(HOSPITAL_CAPACITY, P_MOVE,
+		P_INFECT, P_VACCINATION, P_PROTECTION, P_OBSERVE);
+	for (int i = 0; i < steps; i++)
+	{
+		game->Step();
+	}
+	game->SaveStep();
+	return true;
+}
+```
+
+Step 4, generate the solution. Note that the target platform should have the same number of bits as your OS, and also the same number of bits as your python interpreter.
+
+Step 5, copy the generated dll file (usually Debug/x64/DLL1.dll) to the /bin folder of the project. You can write a script for this step if you don't want to do it repeatedly, or modify main.py to let python do this automatically for you. :) 
+
+Step 6: Modify the dll call method in ./visual/utils.h. Since we compiled it with the windows system compiler, we have to call it with the windll style.
+
+```py
+from ctypes import *
+...
+STEP_PER_DAY = 12
+...
+def load_dll(name="./bin/sim.dll"):
+    lib = windll.LoadLibrary(name)
+    lib.sim.argtypes = [c_int, c_int, c_double, c_double,
+                        c_double, c_double, c_double]
+    return lib
+
+```
+
+Finally, try to run main.py and good luck!
 
 ## Structure
 
