@@ -10,7 +10,7 @@
 #include "logger.h"
 
 const int TOTAL_STEPS = 300;
-constexpr int MAP_H = 700;
+constexpr int MAP_H = 800;
 constexpr int MAP_W = 800;
 constexpr int TOTAL_POPULATION = 5000;
 const int INITIAL_INFECT_NUM = 50;

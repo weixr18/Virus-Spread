@@ -28,7 +28,7 @@ pens = {
 class ShowArea(QWidget):
     def __init__(self, parent=None):
         super(QWidget, self).__init__(parent)
-        self.pix = QPixmap(800, 700)
+        self.pix = QPixmap(800, 800)
         self.pix.fill(Qt.white)
 
     def setData(self, data):

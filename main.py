@@ -1,10 +1,8 @@
-import random
 import numpy as np
 import sys
 import os.path
 
-from PyQt5.QtCore import QPoint, Qt, pyqtSignal, QThread
-from PyQt5.QtGui import QPainter, QPen
+from PyQt5.QtCore import pyqtSignal, QThread
 from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.uic import loadUi
 

@@ -21,6 +21,7 @@ class Person
 {
 public:
     int id_ = -1;
+    //size_t stay_time = 1;
     InfectType status_;
     bool vaccinated_;
     std::vector<Person *> neighborhood_;

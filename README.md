@@ -4,7 +4,7 @@ An interactive visualized simulation of virus spread.
 
 ## Dependencies
 
-Our visualization script requires pyQt5 and other third-party libraries:
+Our visualization script requires Python package pyQt5 and other third-party libraries:
 
 + numpy\=\=1.20.3
 + pandas\=\=1.2.4
@@ -45,7 +45,7 @@ To solve this problem, there are two ways. First, put the \bin path of the gcc c
 
 + libstdc++-6.dll
 + libgcc_s_seh-1.dll
-+ libwinpthread-1
++ libwinpthread-1.dll
 
 The python script responsible for loading the dll ([visual/utils.py](https://github.com/weixr18/Virus-Spread/blob/main/visual/utils.py)) will take the .\bin into the environment variable, so it is valid to do so.
 
@@ -60,14 +60,16 @@ The python script responsible for loading the dll ([visual/utils.py](https://git
 
 ## Example
 
-With the default parameters:
+With the default parameters,
 
-    HOSPITAL_CAPACITY = 100
-    P_MOVE = 0.9
-    P_INFECT = 0.6
-    P_VACCINATION = 0.4
-    P_PROTECTION = 0.8
-    P_OBSERVE = 0.0
+```ps1
+HOSPITAL_CAPACITY = 100
+P_MOVE = 0.9
+P_INFECT = 0.6
+P_VACCINATION = 0.4
+P_PROTECTION = 0.8
+P_OBSERVE = 0.0
+```
 
 the visualization looks like this
 

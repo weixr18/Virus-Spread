@@ -8,7 +8,7 @@ from .utils import load_dll, load_data
 DLL = load_dll()
 
 HOSPITAL_CAPACITY = 100
-P_MOVE = 0.9
+P_MOVE = 0.1
 P_INFECT = 0.6
 P_VACCINATION = 0.4
 P_PROTECTION = 0.8
@@ -95,16 +95,16 @@ def show_spread(params=[100, 0.9, 0.6, 0.4, 0.8, 0.00], title="typical spread"):
 
 
 def plot():
-    # for i in range(0, 6):
-    #     if i == 0:
-    #         study_on(i, list(range(0, 550, 50)))
-    #     elif i == 5:
-    #         study_on(i, np.linspace(0, 0.1, num=11))
-    #     else:
-    #         study_on(i)
-    show_spread(
-        params=[100, 0.9, 0.6, 0.9, 0.8, 0.00],
-        title="high vaccination rate"
-    )
+    for i in range(1):
+        if i == 0:
+            study_on(i, list(range(0, 550, 50)))
+        elif i == 5:
+            study_on(i, np.linspace(0, 0.1, num=11))
+        else:
+            study_on(i)
+    # show_spread(
+    #     params=[100, 0.3, 0.6, 0.9, 0.8, 0.00],
+    #     title="high vaccination rate"
+    # )
 
     pass
